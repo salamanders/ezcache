@@ -1,39 +1,26 @@
 package info.benjaminhill
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.content.*
-import io.ktor.http.content.*
-import io.ktor.sessions.*
-import io.ktor.features.*
-import io.ktor.util.date.*
-import io.ktor.websocket.*
-import io.ktor.http.cio.websocket.*
-import java.time.*
-import io.ktor.gson.*
-import java.io.*
-import java.util.*
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
-import io.ktor.network.util.*
-import kotlin.coroutines.*
-import kotlinx.coroutines.*
+import io.ktor.util.*
 import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.InputStream
+import java.util.*
 
 /**
  * Two mains are provided, you must first start EchoApp.Server, and then EchoApp.Client.
  * You can also start EchoApp.Server and then use a telnet client to connect to the echo server.
  */
 object EchoApp {
+    @KtorExperimentalAPI
     val selectorManager = ActorSelectorManager(Dispatchers.IO)
-    val DefaultPort = 9002
+    const val DefaultPort = 9002
 
     object Server {
+        @KtorExperimentalAPI
         @JvmStatic
         fun main(args: Array<String>) {
             runBlocking {
@@ -60,6 +47,7 @@ object EchoApp {
     }
 
     object Client {
+        @KtorExperimentalAPI
         @JvmStatic
         fun main(args: Array<String>) {
             runBlocking {

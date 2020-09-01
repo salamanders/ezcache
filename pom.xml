@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>info.benjaminhill</groupId>
     <artifactId>ezcache</artifactId>
@@ -14,19 +15,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <main.class>io.ktor.server.cio.EngineMain</main.class>
+
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+
     </properties>
     <repositories>
         <repository>
             <id>repo1</id>
             <url>https://jcenter.bintray.com</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>repo2</id>
             <url>https://kotlin.bintray.com/ktor</url>
-            <releases><enabled>true</enabled></releases>
-            <snapshots><enabled>true</enabled></snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <dependencies>
@@ -102,7 +115,10 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration><source>1.8</source><target>1.8</target></configuration>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -111,14 +127,18 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <goals><goal>compile</goal></goals>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                         <configuration>
                             <experimentalCoroutines>enable</experimentalCoroutines>
                         </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <goals><goal>test-compile</goal></goals>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
                         <configuration>
                             <experimentalCoroutines>enable</experimentalCoroutines>
                         </configuration>
@@ -128,7 +148,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -141,12 +161,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
                         <phase>package</phase>
-                        <goals> <goal>single</goal> </goals>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
                         <configuration>
                             <archive>
                                 <manifest>
@@ -160,6 +182,21 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <version>2.3.0</version>
+                <configuration>
+                    <projectId>GCLOUD_CONFIG</projectId>
+                    <version>kotlin-ktor</version>
+                    <!-- Ktor generator moved from Maven convention of src/main/* to simply th top level project directory -->
+                    <appEngineDirectory>./</appEngineDirectory>
+                    <!-- Tell App Engine plugin to use the Fat JAR with all of the dependencies -->
+                    <artifact>${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar</artifact>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>
