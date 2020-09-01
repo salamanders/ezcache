@@ -13,4 +13,4 @@
 # limitations under the License.
 
 runtime: java11
-entrypoint: 'java -jar target/kotlin-ktor-0.0.1-jar-with-dependencies.jar'
+entrypoint: 'java -jar target/ezcache-0.0.1-jar-with-dependencies.jar'
