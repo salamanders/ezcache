@@ -13,6 +13,7 @@ target/maven-archiver
 target/maven-status
 target/surefire-reports
 target/test-classes
+target/ezcache-0.0.1.jar
 
 .idea
 .mvn

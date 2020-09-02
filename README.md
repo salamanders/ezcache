@@ -9,13 +9,13 @@ A toy app to try Kotlin 1.4 + GAE + JRE 11
 
 Gcloud console: create new project 'ezcache'
 
-    mvn package ?
     gcloud components update
     gcloud auth login
     gcloud config set project ezcache
-    mvn package com.google.cloud.tools:appengine-maven-plugin:run # does not work https://github.com/GoogleCloudPlatform/app-maven-plugin/issues/390
-    mvn com.google.cloud.tools:appengine-maven-plugin:deploy # does not work.
-    mvn package appengine:deploy # does not work.
-    gcloud app deploy
+    # Run the Application.kt for local debug
+    mvn package && gcloud app deploy --quiet
 
 https://ezcache.appspot.com
+https://ezcache.appspot.com/static/ktor_logo.svg
+https://ezcache.appspot.com/session/increment
+https://ezcache.appspot.com/json/gson
