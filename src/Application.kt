@@ -1,79 +1,31 @@
 package info.benjaminhill
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.http.content.*
-import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.date.*
-import java.net.FileNameMap
-import java.net.URLConnection
-import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
 
+// Can't use CIO for ServerSideEvents: https://youtrack.jetbrains.com/issue/KTOR-605
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
-
+@ExperimentalTime
 @Suppress("unused") // Referenced in application.conf
 fun Application.module(testing: Boolean = false) {
 
     routing {
 
-        get("/ts") {
-            val fileNames = call.request.queryParameters.getAll("fileName")!!
-            require(fileNames.isNotEmpty()) { "Missing at least one 'fileName'"}
-            call.respond(fileNames.map {
-                it to cache.getIfPresent(it)?.ts
-            }.toMap())
-        }
+        get("/ts") { doTsGet() }
+        put("/cache") { doCachePut() }
+        post("/cache") { doCachePut() }
+        get("/cache") { doCacheGet() }
+        get("/sse") { doSseGet() }
 
-        put("/cache") {
-            // val postParameters: Parameters = call.receiveParameters()
-            val multipart = call.receiveMultipart()
-            lateinit var fileName: String
-            lateinit var content: ByteArray
-
-            // Processes each part of the multipart input content of the user
-            multipart.forEachPart { part ->
-                if (part is PartData.FormItem) {
-                    when (part.name) {
-                        "fileName" -> {
-                            fileName = part.value
-                        }
-                        else -> error("Unknown form part:'${part.name}'")
-                    }
-                } else if (part is PartData.FileItem) {
-                    //val ext = File(part.originalFileName!!).extension
-                    part.streamProvider().use {
-                        content = it.readAllBytes()
-                    }
-                }
-                part.dispose()
-            }
-            cache.put(fileName, CachedFile(content = content))
-            call.respond(HttpStatusCode.OK) { "Put ${content.size}" }
-        }
-
-        get("/cache") {
-            val params = call.receiveParameters()
-            val fileName = params["fileName"]
-            require(fileName !=null) { "Missing required parameter 'fileName'" }
-            val cacheFile = cache.getIfPresent(fileName)
-            require(cacheFile != null) {  "Unable to locate cached item '$fileName'" }
-
-            val mimeType = fileNameMap.getContentTypeFor(fileName).split("/")
-            call.respondBytes(contentType = ContentType(mimeType[0], mimeType[1])) {
-                cacheFile.content
-            }
-        }
-
-        static("/") {
-            resources(resourcePackage = "static")
-        }
+        static("/") { resources(resourcePackage = "static") }
         defaultResource(resource = "index.html", resourcePackage = "static")
     }
 
@@ -83,7 +35,8 @@ fun Application.module(testing: Boolean = false) {
             call.respondText(
                 text = cause.message ?: "unknown issue",
                 contentType = ContentType.Text.Plain,
-                status = HttpStatusCode.InternalServerError)
+                status = HttpStatusCode.InternalServerError
+            )
         }
     }
 
@@ -139,14 +92,3 @@ fun Application.module(testing: Boolean = false) {
 
 }
 
-class CachedFile(
-    val ts: Long = System.currentTimeMillis(),
-    val content: ByteArray,
-)
-
-var cache: Cache<String, CachedFile> = CacheBuilder.newBuilder()
-    .maximumSize(1_000)
-    .expireAfterAccess(10, TimeUnit.MINUTES)
-    .build()
-
-var fileNameMap: FileNameMap = URLConnection.getFileNameMap()

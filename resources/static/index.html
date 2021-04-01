@@ -1,8 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>EZ Cache</title>
 </head>
-<body>Cache some (small) stuff.</body>
+<body>
+<h1>Cache some (small) stuff.</h1>
+
+<form method="post" enctype="multipart/form-data" action="/cache">
+    <div>
+        <label for="small_image">Small image file:</label>
+        <input type="file" id="small_image" name="small_image" accept="image/png, image/jpeg, image/webp" required>
+    </div>
+    <div>
+        <label for="fileName">File Name (valid extension)</label>
+        <input id="fileName" name="fileName" required>
+    </div>
+    <input type="submit" value="Cache Image">
+</form>
+
+</body>
 </html>

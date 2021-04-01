@@ -19,3 +19,4 @@ https://ezcache.appspot.com
 https://ezcache.appspot.com/static/ktor_logo.svg
 https://ezcache.appspot.com/session/increment
 https://ezcache.appspot.com/json/gson
+

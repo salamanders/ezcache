@@ -5,8 +5,10 @@ import io.ktor.server.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
 
 class ApplicationTest {
+    @ExperimentalTime
     @Test
     fun testRoot() {
         withTestApplication({ module(testing = true) }) {
